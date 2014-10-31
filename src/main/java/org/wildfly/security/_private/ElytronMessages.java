@@ -111,4 +111,10 @@ public interface ElytronMessages extends BasicLogger {
 
     @Message(id = 20, value = "Unexpected end of file")
     EOFException unexpectedEof();
+
+    @Message(id = 21, value = "Invalid OID character '%s' at offset %d of \"%s\"")
+    IllegalArgumentException invalidOidCharacter(char character, int index, String string);
+
+    @Message(id = 22, value = "Invalid OID sub-ID %d")
+    IllegalArgumentException invalidOidChildId(int subId);
 }
