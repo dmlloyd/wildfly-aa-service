@@ -58,7 +58,7 @@ class SetNamePrincipalAuthenticationConfiguration extends AuthenticationConfigur
     }
 
     boolean halfEqual(final AuthenticationConfiguration other) {
-        return principal.equals(getPrincipal()) && parentHalfEqual(other);
+        return other.delegatesThrough(SetNamePrincipalAuthenticationConfiguration.class) && principal.equals(getPrincipal()) && parentHalfEqual(other);
     }
 
     int calcHashCode() {

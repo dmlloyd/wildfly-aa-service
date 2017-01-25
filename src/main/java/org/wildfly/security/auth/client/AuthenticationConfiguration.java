@@ -83,7 +83,6 @@ import org.wildfly.security.credential.source.KeyStoreCredentialSource;
 import org.wildfly.security.credential.store.CredentialStore;
 import org.wildfly.security.password.Password;
 import org.wildfly.security.password.interfaces.ClearPassword;
-import org.wildfly.security.sasl.localuser.LocalUserSaslFactory;
 import org.wildfly.security.sasl.util.FilterMechanismSaslClientFactory;
 import org.wildfly.security.sasl.util.PropertiesSaslClientFactory;
 import org.wildfly.security.sasl.util.ProtocolSaslClientFactory;
@@ -144,8 +143,7 @@ public abstract class AuthenticationConfiguration {
         }
 
         boolean saslSupportedByConfiguration(final String mechanismName) {
-            // always supported by default
-            return mechanismName.equals(LocalUserSaslFactory.JBOSS_LOCAL_USER);
+            return false;
         }
 
         boolean saslAllowedByConfiguration(final String mechanismName) {
@@ -491,6 +489,15 @@ public abstract class AuthenticationConfiguration {
      */
     public final AuthenticationConfiguration useAnonymous() {
         return new SetAnonymousAuthenticationConfiguration(this);
+    }
+
+    /**
+     * Create a new configuration which is the same as this configuration, but which uses local login.
+     *
+     * @return the new configuration
+     */
+    public final AuthenticationConfiguration useLocalUser() {
+        return new SetLocalUserAuthenticationConfiguration(this);
     }
 
     /**
