@@ -138,7 +138,8 @@ public final class ElytronXmlParser {
 
         VERSION_1_0("urn:elytron:1.0", null),
         VERSION_1_0_1("urn:elytron:1.0.1", VERSION_1_0),
-        VERSION_1_1("urn:elytron:client:1.1", VERSION_1_0_1);
+        VERSION_1_1("urn:elytron:client:1.1", VERSION_1_0_1),
+        VERSION_1_2("urn:elytron:client:1.2", VERSION_1_1);
 
         final String namespace;
 
@@ -770,6 +771,7 @@ public final class ElytronXmlParser {
                 switch (reader.getLocalName()) {
                     // -- set --
                     case "set-host": {
+                        if (xmlVersion.isAtLeast(Version.VERSION_1_2)) throw reader.unexpectedElement();
                         if (isSet(foundBits, 0)) throw reader.unexpectedElement();
                         foundBits = setBit(foundBits, 0);
                         final String hostName = parseNameType(reader);
@@ -778,6 +780,7 @@ public final class ElytronXmlParser {
                         break;
                     }
                     case "set-port": {
+                        if (xmlVersion.isAtLeast(Version.VERSION_1_2)) throw reader.unexpectedElement();
                         if (isSet(foundBits, 1)) throw reader.unexpectedElement();
                         foundBits = setBit(foundBits, 1);
                         final int port = parsePortType(reader);
@@ -868,6 +871,7 @@ public final class ElytronXmlParser {
                         break;
                     }
                     case "set-protocol": {
+                        if (xmlVersion.isAtLeast(Version.VERSION_1_2)) throw reader.unexpectedElement();
                         if (isSet(foundBits, 13)) throw reader.unexpectedElement();
                         foundBits = setBit(foundBits, 13);
                         final String protocol = parseNameType(reader);
