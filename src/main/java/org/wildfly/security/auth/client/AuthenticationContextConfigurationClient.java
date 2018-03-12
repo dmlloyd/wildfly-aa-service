@@ -117,7 +117,6 @@ public final class AuthenticationContextConfigurationClient {
         final RuleNode<AuthenticationConfiguration> node = authenticationContext.authRuleMatching(uri, abstractType, abstractTypeAuthority);
         AuthenticationConfiguration configuration = node != null ? node.getConfiguration() : AuthenticationConfiguration.empty();
         configuration = initializeConfiguration(uri, configuration);
-        configuration = establishOverrides(uri, protocolDefaultPort, configuration);
 
         log.tracef("getAuthenticationConfiguration uri=%s, protocolDefaultPort=%d, abstractType=%s, abstractTypeAuthority=%s, MatchRule=[%s], AuthenticationConfiguration=[%s]",
                 uri, protocolDefaultPort, abstractType, abstractTypeAuthority, node != null ? node.rule : null, configuration);
@@ -146,25 +145,6 @@ public final class AuthenticationContextConfigurationClient {
         log.tracef("getAuthenticationConfiguration uri=%s, abstractType=%s, abstractTypeAuthority=%s, MatchRule=[%s], AuthenticationConfiguration=[%s]",
                 uri, abstractType, abstractTypeAuthority, node != null ? node.rule : null, configuration);
 
-        return configuration;
-    }
-
-    @SuppressWarnings("deprecation")
-    private static AuthenticationConfiguration establishOverrides(final URI uri, final int protocolDefaultPort, AuthenticationConfiguration configuration) {
-        final String uriHost = uri.getHost();
-        if (uriHost != null && configuration.setHost == null) {
-            configuration = configuration.useHost(uriHost);
-        }
-        int port = uri.getPort();
-        if (port == -1) port = protocolDefaultPort;
-        if (port != -1 && configuration.setPort == -1) {
-            // use the URI port in this configuration
-            configuration = configuration.usePort(port);
-        }
-        final String scheme = uri.getScheme();
-        if (scheme != null && configuration.setProtocol == null) {
-            configuration = configuration.useProtocol(scheme);
-        }
         return configuration;
     }
 
@@ -262,8 +242,7 @@ public final class AuthenticationContextConfigurationClient {
     public String getRealHost(URI uri, AuthenticationConfiguration configuration) {
         Assert.checkNotNullParam("uri", uri);
         Assert.checkNotNullParam("configuration", configuration);
-        final String configurationHost = configuration.getHost();
-        return configurationHost == null ? uri.getHost() : configurationHost;
+        return uri.getHost();
     }
 
     /**
@@ -276,7 +255,7 @@ public final class AuthenticationContextConfigurationClient {
     @Deprecated
     public String getRealHost(AuthenticationConfiguration configuration) {
         Assert.checkNotNullParam("configuration", configuration);
-        return configuration.getHost();
+        return null;
     }
 
     /**
@@ -291,8 +270,7 @@ public final class AuthenticationContextConfigurationClient {
     public int getRealPort(URI uri, AuthenticationConfiguration configuration) {
         Assert.checkNotNullParam("uri", uri);
         Assert.checkNotNullParam("configuration", configuration);
-        final int configurationPort = configuration.getPort();
-        return configurationPort == -1 ? uri.getPort() : configurationPort;
+        return uri.getPort();
     }
 
     /**
@@ -305,7 +283,7 @@ public final class AuthenticationContextConfigurationClient {
     @Deprecated
     public int getRealPort(AuthenticationConfiguration configuration) {
         Assert.checkNotNullParam("configuration", configuration);
-        return configuration.getPort();
+        return -1;
     }
 
     /**
@@ -320,8 +298,7 @@ public final class AuthenticationContextConfigurationClient {
     public String getRealProtocol(URI uri, AuthenticationConfiguration configuration) {
         Assert.checkNotNullParam("uri", uri);
         Assert.checkNotNullParam("configuration", configuration);
-        final String protocol = configuration.getProtocol();
-        return protocol == null ? uri.getScheme() : protocol;
+        return uri.getScheme();
     }
 
     /**
@@ -334,7 +311,7 @@ public final class AuthenticationContextConfigurationClient {
     @Deprecated
     public String getRealProtocol(AuthenticationConfiguration configuration) {
         Assert.checkNotNullParam("configuration", configuration);
-        return configuration.getProtocol();
+        return null;
     }
 
     /**
@@ -422,10 +399,8 @@ public final class AuthenticationContextConfigurationClient {
     public InetSocketAddress getDestinationInetSocketAddress(URI uri, AuthenticationConfiguration configuration, int protocolDefaultPort) {
         Assert.checkNotNullParam("uri", uri);
         Assert.checkNotNullParam("configuration", configuration);
-        String host = configuration.getHost();
-        if (host == null) host = uri.getHost();
-        int port = configuration.getPort();
-        if (port == -1) port = uri.getPort();
+        String host = uri.getHost();
+        int port = uri.getPort();
         if (port == -1) port = protocolDefaultPort;
         return new InetSocketAddress(host, port);
     }
@@ -440,7 +415,7 @@ public final class AuthenticationContextConfigurationClient {
     @Deprecated
     public InetSocketAddress getDestinationInetSocketAddress(AuthenticationConfiguration configuration) {
         Assert.checkNotNullParam("configuration", configuration);
-        return new InetSocketAddress(configuration.getHost(), configuration.getPort());
+        return null;
     }
 
     /**

@@ -141,8 +141,8 @@ public final class AuthenticationConfiguration {
     private static final EnumSet<CallbackKind> NO_CALLBACK_KINDS = EnumSet.noneOf(CallbackKind.class);
 
     private static final int SET_PRINCIPAL = 0;
-    private static final int SET_HOST = 1;
-    private static final int SET_PROTOCOL = 2;
+    // unused 1
+    // unused 2
     private static final int SET_REALM = 3;
     private static final int SET_AUTHZ_PRINCIPAL = 4;
     private static final int SET_FWD_AUTH_NAME_DOMAIN = 5;
@@ -189,8 +189,6 @@ public final class AuthenticationConfiguration {
 
     final AccessControlContext capturedAccessContext;
     @NotNull final Principal principal;
-    final String setHost;
-    final String setProtocol;
     final String setRealm;
     final Principal setAuthzPrincipal;
     final SecurityDomain authenticationNameForwardSecurityDomain;
@@ -199,7 +197,6 @@ public final class AuthenticationConfiguration {
     final CallbackHandler userCallbackHandler;
     final EnumSet<CallbackKind> userCallbackKinds;
     final CredentialSource credentialSource;
-    final int setPort;
     final Supplier<Provider[]> providerSupplier;
     final SecurityFactory<X509KeyManager> keyManagerFactory;
     final SaslMechanismSelector saslMechanismSelector;
@@ -219,8 +216,6 @@ public final class AuthenticationConfiguration {
     private AuthenticationConfiguration() {
         this.capturedAccessContext = null;
         this.principal = AnonymousPrincipal.getInstance();
-        this.setHost = null;
-        this.setProtocol = null;
         this.setRealm = null;
         this.setAuthzPrincipal = null;
         this.authenticationNameForwardSecurityDomain = null;
@@ -229,7 +224,6 @@ public final class AuthenticationConfiguration {
         this.userCallbackHandler = null;
         this.userCallbackKinds = NO_CALLBACK_KINDS;
         this.credentialSource = IdentityCredentials.NONE;
-        this.setPort = -1;
         this.providerSupplier = DEFAULT_PROVIDER_SUPPLIER;
         this.keyManagerFactory = null;
         this.saslMechanismSelector = null;
@@ -254,8 +248,6 @@ public final class AuthenticationConfiguration {
     private AuthenticationConfiguration(final AuthenticationConfiguration original, final int what, final Object value) {
         this.capturedAccessContext = what == SET_ACCESS_CTXT ? (AccessControlContext) value : original.capturedAccessContext;
         this.principal = what == SET_PRINCIPAL ? (Principal) value : original.principal;
-        this.setHost = what == SET_HOST ? (String) value : original.setHost;
-        this.setProtocol = what == SET_PROTOCOL ? (String) value : original.setProtocol;
         this.setRealm = what == SET_REALM ? (String) value : original.setRealm;
         this.setAuthzPrincipal = what == SET_AUTHZ_PRINCIPAL ? (Principal) value : original.setAuthzPrincipal;
         this.authenticationNameForwardSecurityDomain = what == SET_FWD_AUTH_NAME_DOMAIN ? (SecurityDomain) value : original.authenticationNameForwardSecurityDomain;
@@ -264,7 +256,6 @@ public final class AuthenticationConfiguration {
         this.userCallbackHandler = what == SET_USER_CBH ? (CallbackHandler) value : original.userCallbackHandler;
         this.userCallbackKinds = (what == SET_USER_CB_KINDS ? (EnumSet<CallbackKind>) value : original.userCallbackKinds).clone();
         this.credentialSource = what == SET_CRED_SOURCE ? (CredentialSource) value : original.credentialSource;
-        this.setPort = original.setPort;
         this.providerSupplier = what == SET_PROVIDER_SUPPLIER ? (Supplier<Provider[]>) value : original.providerSupplier;
         this.keyManagerFactory = what == SET_KEY_MGR_FAC ? (SecurityFactory<X509KeyManager>) value : original.keyManagerFactory;
         this.saslMechanismSelector = what == SET_SASL_SELECTOR ? (SaslMechanismSelector) value : original.saslMechanismSelector;
@@ -292,8 +283,6 @@ public final class AuthenticationConfiguration {
     private AuthenticationConfiguration(final AuthenticationConfiguration original, final int what1, final Object value1, final int what2, final Object value2) {
         this.capturedAccessContext = what1 == SET_ACCESS_CTXT ? (AccessControlContext) value1 : what2 == SET_ACCESS_CTXT ? (AccessControlContext) value2 : original.capturedAccessContext;
         this.principal = what1 == SET_PRINCIPAL ? (Principal) value1 : what2 == SET_PRINCIPAL ? (Principal) value2 : original.principal;
-        this.setHost = what1 == SET_HOST ? (String) value1 : what2 == SET_HOST ? (String) value2 : original.setHost;
-        this.setProtocol = what1 == SET_PROTOCOL ? (String) value1 : what2 == SET_PROTOCOL ? (String) value2 : original.setProtocol;
         this.setRealm = what1 == SET_REALM ? (String) value1 : what2 == SET_REALM ? (String) value2 : original.setRealm;
         this.setAuthzPrincipal = what1 == SET_AUTHZ_PRINCIPAL ? (Principal) value1 : what2 == SET_AUTHZ_PRINCIPAL ? (Principal) value2 : original.setAuthzPrincipal;
         this.authenticationNameForwardSecurityDomain = what1 == SET_FWD_AUTH_NAME_DOMAIN ? (SecurityDomain) value1 : what2 == SET_FWD_AUTH_NAME_DOMAIN ? (SecurityDomain) value2 : original.authenticationNameForwardSecurityDomain;
@@ -302,7 +291,6 @@ public final class AuthenticationConfiguration {
         this.userCallbackHandler = what1 == SET_USER_CBH ? (CallbackHandler) value1 : what2 == SET_USER_CBH ? (CallbackHandler) value2 : original.userCallbackHandler;
         this.userCallbackKinds = (what1 == SET_USER_CB_KINDS ? (EnumSet<CallbackKind>) value1 : what2 == SET_USER_CB_KINDS ? (EnumSet<CallbackKind>) value2 : original.userCallbackKinds).clone();
         this.credentialSource = what1 == SET_CRED_SOURCE ? (CredentialSource) value1 : what2 == SET_CRED_SOURCE ? (CredentialSource) value2 : original.credentialSource;
-        this.setPort = original.setPort;
         this.providerSupplier = what1 == SET_PROVIDER_SUPPLIER ? (Supplier<Provider[]>) value1 : what2 == SET_PROVIDER_SUPPLIER ? (Supplier<Provider[]>) value2 : original.providerSupplier;
         this.keyManagerFactory = what1 == SET_KEY_MGR_FAC ? (SecurityFactory<X509KeyManager>) value1 : what2 == SET_KEY_MGR_FAC ? (SecurityFactory<X509KeyManager>) value2 : original.keyManagerFactory;
         this.saslMechanismSelector = what1 == SET_SASL_SELECTOR ? (SaslMechanismSelector) value1 : what2 == SET_SASL_SELECTOR ? (SaslMechanismSelector) value2 : original.saslMechanismSelector;
@@ -317,43 +305,9 @@ public final class AuthenticationConfiguration {
         sanitazeOnMutation(what2);
     }
 
-    /**
-     * Copy constructor for mutating the port number.
-     *
-     * @param original the original configuration (must not be {@code null})
-     * @param port the port number
-     */
-    private AuthenticationConfiguration(final AuthenticationConfiguration original, final int port) {
-        this.capturedAccessContext = original.capturedAccessContext;
-        this.principal = original.principal;
-        this.setHost = original.setHost;
-        this.setProtocol = original.setProtocol;
-        this.setRealm = original.setRealm;
-        this.setAuthzPrincipal = original.setAuthzPrincipal;
-        this.authenticationNameForwardSecurityDomain = original.authenticationNameForwardSecurityDomain;
-        this.authenticationCredentialsForwardSecurityDomain = original.authenticationCredentialsForwardSecurityDomain;
-        this.authorizationNameForwardSecurityDomain = original.authorizationNameForwardSecurityDomain;
-        this.userCallbackHandler = original.userCallbackHandler;
-        this.userCallbackKinds = original.userCallbackKinds;
-        this.credentialSource = original.credentialSource;
-        this.setPort = port;
-        this.providerSupplier = original.providerSupplier;
-        this.keyManagerFactory = original.keyManagerFactory;
-        this.saslMechanismSelector = original.saslMechanismSelector;
-        this.principalRewriter = original.principalRewriter;
-        this.saslClientFactorySupplier = original.saslClientFactorySupplier;
-        this.parameterSpecs = original.parameterSpecs;
-        this.trustManagerFactory = original.trustManagerFactory;
-        this.saslMechanismProperties = original.saslMechanismProperties;
-        this.callbackIntercept = original.callbackIntercept;
-        this.saslProtocol = original.saslProtocol;
-    }
-
     private AuthenticationConfiguration(final AuthenticationConfiguration original, final AuthenticationConfiguration other) {
         this.capturedAccessContext = getOrDefault(other.capturedAccessContext, original.capturedAccessContext);
         this.principal = other.principal instanceof AnonymousPrincipal ? original.principal : other.principal;
-        this.setHost = getOrDefault(other.setHost, original.setHost);
-        this.setProtocol = getOrDefault(other.setProtocol, original.setProtocol);
         this.setRealm = getOrDefault(other.setRealm, original.setRealm);
         this.setAuthzPrincipal = getOrDefault(other.setAuthzPrincipal, original.setAuthzPrincipal);
         this.authenticationNameForwardSecurityDomain = getOrDefault(other.authenticationNameForwardSecurityDomain, original.authenticationNameForwardSecurityDomain);
@@ -362,7 +316,6 @@ public final class AuthenticationConfiguration {
         this.userCallbackHandler = getOrDefault(other.userCallbackHandler, original.userCallbackHandler);
         this.userCallbackKinds = getOrDefault(other.userCallbackKinds, original.userCallbackKinds).clone();
         this.credentialSource = other.credentialSource == IdentityCredentials.NONE ? original.credentialSource : other.credentialSource;
-        this.setPort = getOrDefault(other.setPort, original.setPort);
         this.providerSupplier = getOrDefault(other.providerSupplier, original.providerSupplier);
         this.keyManagerFactory = getOrDefault(other.keyManagerFactory, original.keyManagerFactory);
         this.saslMechanismSelector = getOrDefault(other.saslMechanismSelector, original.saslMechanismSelector);
@@ -380,33 +333,14 @@ public final class AuthenticationConfiguration {
         return value != null ? value : defVal;
     }
 
-    private static int getOrDefault(int value, int defVal) {
-        return value != -1 ? value : defVal;
-    }
-
     // test method
 
     Principal getPrincipal() {
         return authenticationNameForwardSecurityDomain != null ? authenticationNameForwardSecurityDomain.getCurrentSecurityIdentity().getPrincipal() : principal;
     }
 
-    @Deprecated
-    String getHost() {
-        return setHost;
-    }
-
-    @Deprecated
-    String getProtocol() {
-        return setProtocol;
-    }
-
     String getSaslProtocol() {
         return saslProtocol;
-    }
-
-    @Deprecated
-    int getPort() {
-        return setPort;
     }
 
     // internal actions
@@ -940,14 +874,7 @@ public final class AuthenticationConfiguration {
      */
     @Deprecated
     public AuthenticationConfiguration useHost(String hostName) {
-        if (hostName == null || hostName.isEmpty()) {
-            hostName = null;
-        }
-        if (Objects.equals(this.setHost, hostName)) {
-            return this;
-        } else {
-            return new AuthenticationConfiguration(this, SET_HOST, hostName);
-        }
+        return this;
     }
 
     /**
@@ -959,14 +886,7 @@ public final class AuthenticationConfiguration {
      */
     @Deprecated
     public AuthenticationConfiguration useProtocol(String protocol) {
-        if (protocol == null || protocol.isEmpty()) {
-            protocol = null;
-        }
-        if (Objects.equals(this.setProtocol, protocol)) {
-            return this;
-        } else {
-            return new AuthenticationConfiguration(this, SET_PROTOCOL, protocol);
-        }
+        return this;
     }
 
     /**
@@ -995,9 +915,7 @@ public final class AuthenticationConfiguration {
      */
     @Deprecated
     public AuthenticationConfiguration usePort(int port) {
-        if (port < -1 || port > 65535) throw log.invalidPortNumber(port);
-        if (port == setPort) return this;
-        return new AuthenticationConfiguration(this, port);
+        return this;
     }
 
     /**
@@ -1385,8 +1303,6 @@ public final class AuthenticationConfiguration {
     public boolean equals(final AuthenticationConfiguration other) {
         return hashCode() == other.hashCode()
             && Objects.equals(principal, other.principal)
-            && Objects.equals(setHost, other.setHost)
-            && Objects.equals(setProtocol, other.setProtocol)
             && Objects.equals(setRealm, other.setRealm)
             && Objects.equals(setAuthzPrincipal, other.setAuthzPrincipal)
             && Objects.equals(authenticationNameForwardSecurityDomain, other.authenticationNameForwardSecurityDomain)
@@ -1395,7 +1311,6 @@ public final class AuthenticationConfiguration {
             && Objects.equals(userCallbackHandler, other.userCallbackHandler)
             && Objects.equals(userCallbackKinds, other.userCallbackKinds)
             && Objects.equals(credentialSource, other.credentialSource)
-            && this.setPort == other.setPort
             && Objects.equals(providerSupplier, other.providerSupplier)
             && Objects.equals(keyManagerFactory, other.keyManagerFactory)
             && Objects.equals(saslMechanismSelector, other.saslMechanismSelector)
@@ -1416,10 +1331,10 @@ public final class AuthenticationConfiguration {
         int hashCode = this.hashCode;
         if (hashCode == 0) {
             hashCode = Objects.hash(
-                principal, setHost, setProtocol, setRealm, setAuthzPrincipal, authenticationNameForwardSecurityDomain,
+                principal, setRealm, setAuthzPrincipal, authenticationNameForwardSecurityDomain,
                 authenticationCredentialsForwardSecurityDomain, authorizationNameForwardSecurityDomain, userCallbackHandler, credentialSource,
                 providerSupplier, keyManagerFactory, saslMechanismSelector, principalRewriter, saslClientFactorySupplier, parameterSpecs, trustManagerFactory,
-                saslMechanismProperties, saslProtocol) * 19 + setPort;
+                saslMechanismProperties, saslProtocol);
             if (hashCode == 0) {
                 hashCode = 1;
             }
@@ -1438,10 +1353,7 @@ public final class AuthenticationConfiguration {
             b.append("AuthenticationConfiguration:");
             b.append("principal=").append(principal).append(',');
             if (setAuthzPrincipal != null) b.append("authorization-id=").append(setAuthzPrincipal).append(',');
-            if (setHost != null) b.append("set-host=").append(setHost).append(',');
-            if (setProtocol != null) b.append("set-protocol=").append(setProtocol).append(',');
             if (saslProtocol != null) b.append("sasl-protocol-name=").append(saslProtocol).append(',');
-            if (setPort != -1) b.append("set-port=").append(setPort).append(',');
             if (setRealm != null) b.append("set-realm=").append(setRealm).append(',');
             if (authenticationNameForwardSecurityDomain != null) b.append("forwarding-authentication-name,");
             if (authenticationCredentialsForwardSecurityDomain != null) b.append("forwarding-authentication-credentials,");
