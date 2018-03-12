@@ -774,8 +774,8 @@ public final class ElytronXmlParser {
                         if (xmlVersion.isAtLeast(Version.VERSION_1_2)) throw reader.unexpectedElement();
                         if (isSet(foundBits, 0)) throw reader.unexpectedElement();
                         foundBits = setBit(foundBits, 0);
-                        final String hostName = parseNameType(reader);
-                        configuration = andThenOp(configuration, parentConfig -> parentConfig.useHost(hostName));
+                        // just the syntax check
+                        parseNameType(reader);
                         xmlLog.xmlDeprecatedElement(reader.getLocalName(), reader.getLocation());
                         break;
                     }
@@ -783,8 +783,8 @@ public final class ElytronXmlParser {
                         if (xmlVersion.isAtLeast(Version.VERSION_1_2)) throw reader.unexpectedElement();
                         if (isSet(foundBits, 1)) throw reader.unexpectedElement();
                         foundBits = setBit(foundBits, 1);
-                        final int port = parsePortType(reader);
-                        configuration = andThenOp(configuration, parentConfig -> parentConfig.usePort(port));
+                        // just the syntax check
+                        parsePortType(reader);
                         xmlLog.xmlDeprecatedElement(reader.getLocalName(), reader.getLocation());
                         break;
                     }
@@ -874,8 +874,8 @@ public final class ElytronXmlParser {
                         if (xmlVersion.isAtLeast(Version.VERSION_1_2)) throw reader.unexpectedElement();
                         if (isSet(foundBits, 13)) throw reader.unexpectedElement();
                         foundBits = setBit(foundBits, 13);
-                        final String protocol = parseNameType(reader);
-                        configuration = andThenOp(configuration, parentConfig -> parentConfig.useProtocol(protocol));
+                        // just the syntax check'
+                        parseNameType(reader);
                         xmlLog.xmlDeprecatedElement(reader.getLocalName(), reader.getLocation());
                         break;
                     }

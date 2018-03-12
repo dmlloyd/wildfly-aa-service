@@ -866,30 +866,6 @@ public final class AuthenticationConfiguration {
     }
 
     /**
-     * Create a new configuration which is the same as this configuration, but which connects to a different host name.
-     *
-     * @param hostName the host name to connect to
-     * @return the new configuration
-     * @deprecated This configuration is not supported by most providers and will be removed in a future release.
-     */
-    @Deprecated
-    public AuthenticationConfiguration useHost(String hostName) {
-        return this;
-    }
-
-    /**
-     * Create a new configuration which is the same as this configuration, but which specifies a different protocol to be used for outgoing connection.
-     *
-     * @param protocol the protocol to be used for outgoing connection.
-     * @return the new configuration
-     * @deprecated This configuration is not supported by most providers and will be removed in a future release.
-     */
-    @Deprecated
-    public AuthenticationConfiguration useProtocol(String protocol) {
-        return this;
-    }
-
-    /**
      * Create a new configuration which is the same as this configuration, but which specifies a different protocol to be passed to the authentication mechanisms.
      *
      * @param saslProtocol the protocol to pass to the authentication mechanisms.
@@ -904,18 +880,6 @@ public final class AuthenticationConfiguration {
         } else {
             return new AuthenticationConfiguration(this, SET_SASL_PROTOCOL, saslProtocol);
         }
-    }
-
-    /**
-     * Create a new configuration which is the same as this configuration, but which connects to a different port.
-     *
-     * @param port the port to connect to, or -1 to not override the port
-     * @return the new configuration
-     * @deprecated This configuration is not supported by most providers and will be removed in a future release.
-     */
-    @Deprecated
-    public AuthenticationConfiguration usePort(int port) {
-        return this;
     }
 
     /**
